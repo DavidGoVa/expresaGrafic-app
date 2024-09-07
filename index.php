@@ -173,7 +173,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
                     <h1>Cotización</h1>
 
-
+                    
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -219,55 +219,52 @@ if (!isset($_SESSION['usuario_id'])) {
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <div>
-                           <div>
-                           <input type="text" id="CNR" placeholder="Ingrese el texto">
-                           <select id="CR">
+                            <div id="divCNR" style="display:flex; flex-direction:column;">
+                            <label for="clienteNoRegistrado">Cliente no Registrado</label>                          
+                            <input type="text" name="clienteNoRegistrado" id="CNR" placeholder="Ingrese el texto">
+                            </div>
+
+                            <div id="divCR" style="display:none; flex-direction:column;">
+                            <label for="clienteRegistrado">Cliente Registrado</label>
+                           <select id="CR" name="clienteRegistrado">
                                     <option value="opcion1">Opción 1</option>
                                     <option value="opcion2">Opción 2</option>
                                     <option value="opcion3">Opción 3</option>
                            </select>
-                           <select id="E">
+                            </div>
+
+                            <div id="divE" style="display:none; flex-direction:column;">
+                            <label for="empresa">Empresa</label>
+                           <select name="empresa" id="E">
                                     <option value="opcion1">Otra Opción 1</option>
                                     <option value="opcion2">Otra Opción 2</option>
                                     <option value="opcion3">Otra Opción 3</option>
                            </select>
-                           </div>
+                            </div>
                            
-                           <div></div>
-
-                           <input type="radio" id="opcionTexto" name="busqueda" value="cnr" onchange="mostrarOpcion()" checked>
+                           
+                           
+                           
+                          
+                        </div>
+                        <div style="display:flex; flex-direction:row;">
+                            <input type="radio" id="opcionTexto" onchange="mostrarOpcion('CNR')" name="busqueda" value="cnr" checked>
                             <label for="opcionTexto">Búsqueda por texto</label><br>
 
-                            <input type="radio" id="opcionSelect" name="busqueda" value="cr" onchange="mostrarOpcion()">
+                            <input type="radio" id="opcionSelect" onchange="mostrarOpcion('CR')" name="busqueda" value="cr">
                             <label for="opcionSelect">Búsqueda por selección</label><br>
 
-                            <input type="radio" id="opcionOpciones" name="busqueda" value="e" onchange="mostrarOpcion()">
+                            <input type="radio" id="opcionOpciones" onchange="mostrarOpcion('E')" name="busqueda" value="e">
                             <label for="opcionOpciones">Búsqueda por 3 opciones</label><br>
-
-                           
-
-                            <!-- Radio buttons con 3 opciones -->
-                            <div id="divOpciones" class="hidden">
-                                <input type="radio" id="opcion1" name="opcionBusqueda" value="opcion1">
-                                <label for="opcion1">Opción 1</label><br>
-
-                                <input type="radio" id="opcion2" name="opcionBusqueda" value="opcion2">
-                                <label for="opcion2">Opción 2</label><br>
-
-                                <input type="radio" id="opcion3" name="opcionBusqueda" value="opcion3">
-                                <label for="opcion3">Opción 3</label><br>
-                            </div>
-
-
                         </div>
 
-                        <a onclick="generarPDF()" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
+                            <a onclick="generarPDF()" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
                     </div>
 
                     <!-- Content Row -->
                     <div class="row">
                         <div class="invoice-container">
-                            <h1>Invoice Maker</h1>
+                            
                             <div class="invoice-header">
                                 <div>
                                     <h2>Información del Cliente</h2>
@@ -301,6 +298,7 @@ if (!isset($_SESSION['usuario_id'])) {
                                 <h2>Total: $<span id="totalAmount">0.00</span></h2>
                             </div>
                         </div>
+                        <a onclick="generarPDF()" class="d-block mb-4 mt-2 btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
                     </div>
 
 
