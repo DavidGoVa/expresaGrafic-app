@@ -29,8 +29,8 @@ if (!isset($_SESSION['usuario_id'])) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+
 
 
 </head>
@@ -173,7 +173,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
                     <h1>Cotización</h1>
 
-                    
+
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -217,88 +217,144 @@ if (!isset($_SESSION['usuario_id'])) {
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <div>
+                    <div class="col-12 col-md-12 col-sm-12 d-flex mb-4 justify-content-between">
+                        <div class="col-4 col-md-4 col-sm-4">
                             <div id="divCNR" style="display:flex; flex-direction:column;">
-                            <label for="clienteNoRegistrado">Cliente no Registrado</label>                          
-                            <input type="text" name="clienteNoRegistrado" id="CNR" placeholder="Ingrese el texto">
+                                <label for="clienteNoRegistrado">Cliente no Registrado</label>
+                                <input type="text" name="clienteNoRegistrado" id="CNR" placeholder="Nombre del cliente">
                             </div>
 
                             <div id="divCR" style="display:none; flex-direction:column;">
-                            <label for="clienteRegistrado">Cliente Registrado</label>
-                           <select id="CR" name="clienteRegistrado">
+                                <label for="clienteRegistrado">Cliente Registrado</label>
+                                <select id="CR" name="clienteRegistrado">
                                     <option value="opcion1">Opción 1</option>
                                     <option value="opcion2">Opción 2</option>
                                     <option value="opcion3">Opción 3</option>
-                           </select>
+                                </select>
                             </div>
 
                             <div id="divE" style="display:none; flex-direction:column;">
-                            <label for="empresa">Empresa</label>
-                           <select name="empresa" id="E">
+                                <label for="empresa">Cliente Empresa:</label>
+                                <select name="empresa" id="E">
                                     <option value="opcion1">Otra Opción 1</option>
                                     <option value="opcion2">Otra Opción 2</option>
                                     <option value="opcion3">Otra Opción 3</option>
-                           </select>
+                                </select>
                             </div>
-                           
-                           
-                           
-                           
-                          
-                        </div>
-                        <div style="display:flex; flex-direction:row;">
-                            <input type="radio" id="opcionTexto" onchange="mostrarOpcion('CNR')" name="busqueda" value="cnr" checked>
-                            <label for="opcionTexto">Búsqueda por texto</label><br>
-
-                            <input type="radio" id="opcionSelect" onchange="mostrarOpcion('CR')" name="busqueda" value="cr">
-                            <label for="opcionSelect">Búsqueda por selección</label><br>
-
-                            <input type="radio" id="opcionOpciones" onchange="mostrarOpcion('E')" name="busqueda" value="e">
-                            <label for="opcionOpciones">Búsqueda por 3 opciones</label><br>
                         </div>
 
+                        <div class="col-2 col-md-2 col-sm-4" style="display:flex; flex-direction:column; max-width:30%">
+                            <label for="opcionCliente">Cliente tipo:</label>
+                            <select name="opcionCliente" id="opcionCliente" onchange="mostrarOpcion()">
+                                <option value="CNR">Sin Registro</option>
+                                <option value="CR">Con Registro</option>
+                                <option value="E">Empresarial</option>
+                            </select>
+                        </div>
+
+                        <div class="col-2 col-md-2 col-sm-4" style="display:flex; flex-direction:column; max-width:30%">
+                            <label for="fechaEntrega">Fecha Entrega:</label>
+                            <input type="date" name="fechaEntrega" id="fechaEntrega">
+                        </div>
+
+                        <div class="col-1 col-md-1 d-none d-md-block text-center">
                             <a onclick="generarPDF()" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
+                        </div>
+
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="invoice-container">
-                            
-                            <div class="invoice-header">
-                                <div>
-                                    <h2>Información del Cliente</h2>
-                                    <input type="text" id="clientName" placeholder="Nombre del Cliente">
-                                    <input type="text" id="clientAddress" placeholder="Dirección del Cliente">
-                                </div>
-                                <div>
-                                    <h2>Detalles de la Factura</h2>
-                                    <input type="text" id="invoiceNumber" placeholder="Número de Factura">
-                                    <input type="date" id="invoiceDate">
-                                </div>
+                    <hr class="sidebar-divider mb-4 my-0">
+
+                    <div class="col-12 mb-4" style="display:flex;flex-direction:row;justify-content:space-around;align-items:center">
+                        
+                            <div>
+                                <label for="PNR">Producto sin registro</label>
+                                <input name="tipoprod" id="PNR" type="radio" value="PNR" checked onchange="mostrarProd('PNR')">
                             </div>
 
-                            <table id="invoiceTable">
-                                <thead>
+                            <div>
+                                <label for="PR">Producto Registrado</label>
+                                <input name="tipoprod" id="PR" type="radio" value="PR" onchange="mostrarProd('PR')">
+                            </div>
+
+                            <div>
+                                <label for="PB">Buscar Producto</label>
+                                <input name="tipoprod" id="PB" type="radio" value="PB" onchange="mostrarProd('PB')">
+                            </div>
+
+                            <div class="col-1 text-center">
+                                <a onclick="agregarProducto()" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i>Añadir</a>
+                            </div>
+
+                            <div class="col-1 text-center">
+                                <a onclick="generarPDF()" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i class="fas fa-minus fa-sm text-white-50"></i>Eliminar</a>
+                            </div>
+                        
+                    </div>
+
+                    <div class="col-12 col-md-12 col-sm-12 mb-4 d-flex justify-content-between align-items-center">
+
+                        <div class="col-9" id="productoLibre" style="display:flex; flex-direction:column;">
+                            <label for="textProductoLibre">Escribe el Producto:</label>
+                            <input type="text" id="textProductoLibre">
+                        </div>
+
+                        <div class="col-3" id="productoCategoria" style="display:none; flex-direction:column;">
+                            <label for="categoria">Categoria:</label>
+                            <input type="text" id="categoria">
+                        </div>
+                        <div class="col-3" id="productoSubcategoria" style="display:none; flex-direction:column;">
+                            <label for="subcategoria">Subcategoria:</label>
+                            <input type="text" id="subcategoria">
+                        </div>
+                        <div class="col-3" id="productoNombre" style="display:none; flex-direction:column;">
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" id="nombre">
+                        </div>
+
+                        <div class="col-3" id="busquedaNombre" style="display:none; flex-direction:column;">
+                            <label for="busquedaName">Pon una palabra clave:</label>
+                            <input type="text" id="busquedaName">
+                        </div>
+                        <div class="col-6" id="prodsBusqueda" style="display:none; flex-direction:column;">
+                            <label for="prodsEnc">Productos Encontrados:</label>
+                            <select id="prodsEnc">
+
+                            </select>
+                        </div>
+
+                        <div class="col-2" id="precioInput" style="display:flex; flex-direction:column;">
+                            <label for="precio">Precio:</label>
+                            <input type="number" step="0.01" id="precio">
+                        </div>
+
+                        <div class="col-1" class="col-2" style="display:flex; flex-direction:column;">
+                            <label for="cantidad">Cantidad:</label>
+                            <input type="number" name="cantidad" id="cantidad" step="0.01">
+                        </div>
+
+
+
+                    </div>
+                    <!-- Content Row -->
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="tablaCotizacion" class="table table-bordered table-hover table-striped">
+                                <thead class="thead-dark">
                                     <tr>
-                                        <th>Descripción</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio</th>
-                                        <th>Total</th>
+                                        <th scope="col">Cantidad</th>
+                                        <th scope="col">Descripción</th>
+                                        <th scope="col">Precio Unitario</th>
+                                        <th scope="col">Subtotal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Aquí se agregarán las filas dinámicamente -->
+                                    
                                 </tbody>
                             </table>
-
-                            <button class="add-item">Agregar Ítem</button>
-
-                            <div class="total">
-                                <h2>Total: $<span id="totalAmount">0.00</span></h2>
-                            </div>
                         </div>
-                        <a onclick="generarPDF()" class="d-block mb-4 mt-2 btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
+
+                        <a onclick="generarPDF()" class="d-block d-md-none d-lg-none mb-4 mt-2 btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
                     </div>
 
 
@@ -315,7 +371,7 @@ if (!isset($_SESSION['usuario_id'])) {
     <footer class="sticky-footer bg-white">
         <div class="container my-auto">
             <div class="copyright text-center my-auto">
-                <span>Copyright &copy; ADT 2024</span>
+                <span>Copyright &copy; Expresagrafic 2024</span>
             </div>
         </div>
     </footer>
@@ -350,6 +406,10 @@ if (!isset($_SESSION['usuario_id'])) {
             </div>
         </div>
     </div>
+    <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
+
+
+
     <script src="funcionesAdmin.js"></script>
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
