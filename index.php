@@ -170,8 +170,11 @@ if (!isset($_SESSION['usuario_id'])) {
                     <!-- Topbar Search -->
 
 
-
+                    <div style="display:flex;justify-content:space-between;">
                     <h1>Cotización</h1>
+                    <input type="number" step="0.01" id="subtotal">
+                    </div>
+                    
 
 
 
@@ -288,7 +291,7 @@ if (!isset($_SESSION['usuario_id'])) {
                             </div>
 
                             <div class="col-1 text-center">
-                                <a onclick="generarPDF()" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i class="fas fa-minus fa-sm text-white-50"></i>Eliminar</a>
+                                <a onclick="eliminarFila()" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i class="fas fa-minus fa-sm text-white-50"></i>Eliminar</a>
                             </div>
                         
                     </div>
@@ -302,11 +305,15 @@ if (!isset($_SESSION['usuario_id'])) {
 
                         <div class="col-3" id="productoCategoria" style="display:none; flex-direction:column;">
                             <label for="categoria">Categoria:</label>
-                            <input type="text" id="categoria">
+                            <select name="categoria" id="categoria" onchange="cargarSubcategorias()">
+
+                            </select>
                         </div>
                         <div class="col-3" id="productoSubcategoria" style="display:none; flex-direction:column;">
                             <label for="subcategoria">Subcategoria:</label>
-                            <input type="text" id="subcategoria">
+                            <select name="subcategoria" id="subcategoria" onchange="escogeProd()">
+
+                            </select>
                         </div>
                         <div class="col-3" id="productoNombre" style="display:none; flex-direction:column;">
                             <label for="nombre">Nombre:</label>

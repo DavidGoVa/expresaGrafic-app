@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
   
   cargarClientesEmpresariales();
   cargarDatosClientes();
+  cargarCategorias();
 });
 
 let tipoClienteSeleccionado = 1;
-
 
 function mostrarProd(selectedProdType) {
   // Obtener las referencias a los elementos
@@ -27,12 +27,14 @@ function mostrarProd(selectedProdType) {
     divBusquedaPorNombre.style.display = "none";
     divResultadosBusqueda.style.display = "none";
   }else if(selectedProdType === "PR"){
+    cargarCategorias();
     divTextoProductoLibre.style.display = "none";
     divCategoriaProducto.style.display = "flex";
     divSubcategoriaProducto.style.display = "flex";
     divNombreProducto.style.display = "flex";
     divBusquedaPorNombre.style.display = "none";
     divResultadosBusqueda.style.display = "none";
+    cargarSubcategorias();
   }else if(selectedProdType === "PB"){
     divTextoProductoLibre.style.display = "none";
     divCategoriaProducto.style.display = "none";
@@ -46,17 +48,32 @@ function mostrarProd(selectedProdType) {
 
 let productos = [];
 
+function calcularSubtotal() {
+  // Inicializar subtotal a 0 cada vez que se llame la función
+  let subtotalInput = 0;
+
+  // Iterar sobre los productos y sumar sus subtotales
+  productos.forEach(producto => {
+    subtotalInput += parseFloat(producto[3]);
+  });
+
+  // Actualizar el valor del input con el subtotal calculado
+  document.getElementById("subtotal").value = subtotalInput.toFixed(2);
+}
+
+
+let filaSeleccionada = null; // Variable para almacenar la fila seleccionada
+
 function agregarProducto() {
   // Obtener valores de los inputs
   const nombre = document.getElementById('textProductoLibre').value;
   const precioUnitario = parseFloat(document.getElementById('precio').value);
   const cantidad = parseFloat(document.getElementById('cantidad').value);
 
- 
   // Validar los valores
   if (!nombre || !precioUnitario || !cantidad) {
-      alert('Por favor, ingrese valores válidos.');
-      return;
+    alert('Por favor, ingrese valores válidos.');
+    return;
   }
 
   // Calcular subtotal
@@ -66,19 +83,149 @@ function agregarProducto() {
   const tabla = document.getElementById('tablaCotizacion').getElementsByTagName('tbody')[0];
   const nuevaFila = tabla.insertRow();
 
+  // Agregar celdas con el contenido
   nuevaFila.insertCell().textContent = nombre;
   nuevaFila.insertCell().textContent = precioUnitario.toFixed(2);
   nuevaFila.insertCell().textContent = cantidad;
   nuevaFila.insertCell().textContent = subtotal.toFixed(2);
 
-  // Agregar el registro al array
-  productos.push([nombre, cantidad, precioUnitario.toFixed(2), subtotal.toFixed(2)]);
+  // Agregar el registro al array y obtener el índice
+  const idProducto = productos.length; // Usar un identificador único
+  productos.push({ id: idProducto, nombre, cantidad, precioUnitario: precioUnitario.toFixed(2), subtotal: subtotal.toFixed(2) });
+
+  // Asignar el identificador al dataset de la fila
+  nuevaFila.dataset.id = idProducto;
 
   // Limpiar los inputs
   document.getElementById('textProductoLibre').value = '';
   document.getElementById('precio').value = '';
   document.getElementById('cantidad').value = '';
+
+  // Agregar el evento de clic para seleccionar la fila
+  nuevaFila.addEventListener('click', function() {
+    if (filaSeleccionada) {
+      // Revertir el estilo de la fila previamente seleccionada
+      filaSeleccionada.style.outline = '';
+      filaSeleccionada.style.backgroundColor = '';
+    }
+    // Cambiar el estilo de la fila seleccionada
+    nuevaFila.style.outline = '2px solid #007bff'; // Borde azul
+    nuevaFila.style.backgroundColor = '#f0f8ff'; // Fondo ligeramente azul
+    filaSeleccionada = nuevaFila; // Establecer la fila seleccionada
+  });
+
+  calcularSubtotal();
 }
+
+// Función para eliminar la fila seleccionada
+function eliminarFila() {
+  if (filaSeleccionada) {
+    if (confirm('¿Estás seguro de que quieres eliminar esta fila?')) {
+      // Obtener el identificador del producto desde el dataset de la fila
+      const id = filaSeleccionada.dataset.id;
+
+      // Obtener la tabla
+      const tabla = document.getElementById('tablaCotizacion').getElementsByTagName('tbody')[0];
+
+      // Eliminar la fila de la tabla
+      tabla.deleteRow(filaSeleccionada.rowIndex-1);
+
+      // También eliminar el producto del array
+      productos = productos.filter(producto => producto.id != id);
+
+      // Recalcular los subtotales
+      calcularSubtotal();
+
+      // Limpiar la selección
+      filaSeleccionada = null;
+    }
+  } else {
+    alert('No has seleccionado ninguna fila para eliminar.');
+  }
+}
+
+/*function agregarProducto() {
+  // Obtener valores de los inputs
+  const nombre = document.getElementById('textProductoLibre').value;
+  const precioUnitario = parseFloat(document.getElementById('precio').value);
+  const cantidad = parseFloat(document.getElementById('cantidad').value);
+
+  // Validar los valores
+  if (!nombre || !precioUnitario || !cantidad) {
+    alert('Por favor, ingrese valores válidos.');
+    return;
+  }
+
+  // Calcular subtotal
+  const subtotal = precioUnitario * cantidad;
+
+  // Crear una nueva fila en la tabla
+  const tabla = document.getElementById('tablaCotizacion').getElementsByTagName('tbody')[0];
+  const nuevaFila = tabla.insertRow();
+
+  // Agregar celdas con el contenido
+  nuevaFila.insertCell().textContent = nombre;
+  nuevaFila.insertCell().textContent = precioUnitario.toFixed(2);
+  nuevaFila.insertCell().textContent = cantidad;
+  nuevaFila.insertCell().textContent = subtotal.toFixed(2);
+
+  // Agregar el registro al array y obtener el índice
+  const indexProducto = productos.length; // Este será el índice del nuevo producto
+  productos.push([nombre, cantidad, precioUnitario.toFixed(2), subtotal.toFixed(2)]);
+
+  // Asignar el índice al dataset de la fila
+  nuevaFila.dataset.index = indexProducto;
+
+  // Limpiar los inputs
+  document.getElementById('textProductoLibre').value = '';
+  document.getElementById('precio').value = '';
+  document.getElementById('cantidad').value = '';
+
+  // Agregar el evento de clic para seleccionar la fila
+  nuevaFila.addEventListener('click', function() {
+    // Obtener todas las filas del cuerpo de la tabla
+    const filas = tabla.getElementsByTagName('tr');
+  
+    // Recorrer todas las filas y quitar el estilo de resaltado
+    for (let i = 0; i < filas.length; i++) {
+      filas[i].style.outline = ''; // Quitar el borde de resaltado
+      filas[i].style.backgroundColor = ''; // Quitar el color de fondo
+    }
+  
+    // Agregar el estilo de resaltado a la fila seleccionada
+    nuevaFila.style.outline = '2px solid #007bff'; // Borde azul
+    nuevaFila.style.backgroundColor = '#f0f8ff'; // Fondo ligeramente azul
+
+    selectedRowIndex = nuevaFila.dataset.index; 
+  });
+  
+
+  calcularSubtotal();
+}
+
+// Función para eliminar el producto seleccionado
+function eliminarProducto() {
+  if (selectedRowIndex !== null) {
+    const tabla = document.getElementById('tablaCotizacion').getElementsByTagName('tbody')[0];
+
+    // Eliminar el producto del array
+    const index = selectedRowIndex; // Restar 1 porque rowIndex incluye el encabezado
+    productos.splice(index, 1);
+
+    // Eliminar la fila de la tabla
+    tabla.deleteRow(index);
+
+    // Resetear la variable selectedRowIndex
+    selectedRowIndex = null;
+
+    // Recalcular subtotales
+    calcularSubtotal();
+  } else {
+    alert('Por favor, selecciona una fila para eliminar.');
+  }
+}*/
+
+
 
 function cargarDatosClientes(){
 
@@ -160,6 +307,37 @@ function cargarClientesEmpresariales() {
       .then((response) => response.text())
       .then((data) => {
           let selectElement = document.getElementById("E");
+          selectElement.innerHTML = data;
+      })
+      .catch((error) => console.error("Error:", error));
+}
+
+function cargarCategorias() {
+  fetch('APIproductosconregistro.php')
+      .then((response) => response.text())
+      .then((data) => {
+          let selectElement = document.getElementById("categoria");
+          selectElement.innerHTML = data;
+      })
+      .catch((error) => console.error("Error:", error));
+}
+function cargarSubcategorias() {
+  let selected = document.getElementById("categoria");
+  let option = selected.selectedOptions[0];
+  let opcionSeleccionada = option.value;
+  fetch('APIsubcategorias.php?categoria='+encodeURIComponent(opcionSeleccionada))
+      .then((response) => response.text())
+      .then((data) => {
+          let selectElement = document.getElementById("subcategoria");
+          selectElement.innerHTML = data;
+      })
+      .catch((error) => console.error("Error:", error));
+}
+function cargarNombreProductos() {
+  fetch('APIproductosconregistro.php')
+      .then((response) => response.text())
+      .then((data) => {
+          let selectElement = document.getElementById("categoria");
           selectElement.innerHTML = data;
       })
       .catch((error) => console.error("Error:", error));
