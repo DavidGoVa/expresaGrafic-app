@@ -1,6 +1,7 @@
 <?php
 include('conexion.php');
 
+$subcategoria = $_GET['subcategoria'];
 
 $sqlClientesRegistrados = "SELECT * FROM productos WHERE subcategoria = '$subcategoria'";
 $resultClientesRegistrados = $conexion->query($sqlClientesRegistrados);

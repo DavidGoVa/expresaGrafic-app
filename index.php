@@ -311,13 +311,15 @@ if (!isset($_SESSION['usuario_id'])) {
                         </div>
                         <div class="col-3" id="productoSubcategoria" style="display:none; flex-direction:column;">
                             <label for="subcategoria">Subcategoria:</label>
-                            <select name="subcategoria" id="subcategoria" onchange="escogeProd()">
+                            <select name="subcategoria" id="subcategoria" onchange="cargarNombreProductos()">
 
                             </select>
                         </div>
                         <div class="col-3" id="productoNombre" style="display:none; flex-direction:column;">
                             <label for="nombre">Nombre:</label>
-                            <input type="text" id="nombre">
+                            <select name="nombre" id="nombre">
+
+                            </select>
                         </div>
 
                         <div class="col-3" id="busquedaNombre" style="display:none; flex-direction:column;">

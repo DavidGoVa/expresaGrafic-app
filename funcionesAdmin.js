@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   cargarClientesEmpresariales();
   cargarDatosClientes();
   cargarCategorias();
+  cargarNombreProductos();
 });
 
 let tipoClienteSeleccionado = 1;
@@ -334,10 +335,13 @@ function cargarSubcategorias() {
       .catch((error) => console.error("Error:", error));
 }
 function cargarNombreProductos() {
-  fetch('APIproductosconregistro.php')
+  let selectedSub = document.getElementById("subcategoria");
+  let option = selectedSub.selectedOptions[0];
+  let productoSeleccionado = option.value;
+  fetch('APIproductosnombres.php?subcategoria='+encodeURIComponent(productoSeleccionado))
       .then((response) => response.text())
       .then((data) => {
-          let selectElement = document.getElementById("categoria");
+          let selectElement = document.getElementById("nombre");
           selectElement.innerHTML = data;
       })
       .catch((error) => console.error("Error:", error));
