@@ -226,21 +226,22 @@ if (!isset($_SESSION['usuario_id'])) {
 
                             <div id="divCR" style="display:none; flex-direction:column;">
                                 <label for="clienteRegistrado">Cliente Registrado</label>
-                                <select id="CR" name="clienteRegistrado">
-                                    <option value="opcion1">Opción 1</option>
-                                    <option value="opcion2">Opción 2</option>
-                                    <option value="opcion3">Opción 3</option>
+                                <select id="CR" name="clienteRegistrado" onchange="cargarDatosClientes()">
+                                    
                                 </select>
                             </div>
 
                             <div id="divE" style="display:none; flex-direction:column;">
                                 <label for="empresa">Cliente Empresa:</label>
-                                <select name="empresa" id="E">
-                                    <option value="opcion1">Otra Opción 1</option>
-                                    <option value="opcion2">Otra Opción 2</option>
-                                    <option value="opcion3">Otra Opción 3</option>
+                                <select name="empresa" id="E" onchange="cargarDatosClientes()">
+                                  
                                 </select>
                             </div>
+                            <input type="hidden" id="rfc">
+                            <input type="hidden" id="domicilio">
+                            <input type="hidden" id="telefono">
+                            <input type="hidden" id="mail">
+                            <input type="hidden" id="regimen">
                         </div>
 
                         <div class="col-2 col-md-2 col-sm-4" style="display:flex; flex-direction:column; max-width:30%">

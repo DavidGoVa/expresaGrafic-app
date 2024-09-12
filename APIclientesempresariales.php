@@ -2,7 +2,7 @@
 include('conexion.php');
 
 
-$sqlClientesRegistrados = "SELECT * FROM clientes WHERE tipo_cliente = 'normal'";
+$sqlClientesRegistrados = "SELECT * FROM clientes WHERE tipo_cliente = 'empresa'";
 $resultClientesRegistrados = $conexion->query($sqlClientesRegistrados);
 
 if ($resultClientesRegistrados->num_rows > 0) {

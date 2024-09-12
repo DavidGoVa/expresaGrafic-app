@@ -1,34 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   cargarClientesRegistrados();
-
+  
+  cargarClientesEmpresariales();
+  cargarDatosClientes();
 });
 
-function mostrarOpcion() {
-  // Obtener las referencias a los elementos
-  let divClienteNoRegistrado = document.getElementById("divCNR");
-  let divClienteRegistrado = document.getElementById("divCR");
-  let divClienteEmpresa = document.getElementById("divE");
-
-  let selectedCliente = document.getElementById("opcionCliente").value;
-
-  if(selectedCliente === "CNR"){
-    divClienteNoRegistrado.style.display = "flex";
-    divClienteRegistrado.style.display = "none";
-    divClienteEmpresa.style.display = "none";
-  }else if(selectedCliente === "CR"){
-    divClienteNoRegistrado.style.display = "none";
-    divClienteRegistrado.style.display = "flex";
-    divClienteEmpresa.style.display = "none";
-  }else if(selectedCliente === "E"){
-    divClienteNoRegistrado.style.display = "none";
-    divClienteRegistrado.style.display = "none";
-    divClienteEmpresa.style.display = "flex";
-  }else{
-    alert("no sabes nada");
-  }
-
-}
+let tipoClienteSeleccionado = 1;
 
 
 function mostrarProd(selectedProdType) {
@@ -102,7 +80,145 @@ function agregarProducto() {
   document.getElementById('cantidad').value = '';
 }
 
+function cargarDatosClientes(){
+
+  let inputRFC = document.getElementById("rfc");
+  let inputDomicilio = document.getElementById("domicilio");
+  let inputTelefono = document.getElementById("telefono");
+  let inputMail = document.getElementById("mail");
+  let inputRegimen = document.getElementById("regimen");
+
+  if(tipoClienteSeleccionado === 1){
+    inputRFC.value = "";
+    inputDomicilio.value = "";
+    inputTelefono.value = "";
+    inputMail.value = "";
+    inputRegimen.value = "";
+  }else if(tipoClienteSeleccionado === 2){
+    let selectedElement = document.getElementById("CR");
+    let clienteEscogido = selectedElement.selectedOptions[0];
+    inputRFC.value = clienteEscogido.dataset.rfc;
+    inputDomicilio.value = clienteEscogido.dataset.domicilio;
+    inputTelefono.value = clienteEscogido.dataset.telefono;
+    inputMail.value = clienteEscogido.dataset.mail;
+    inputRegimen.value = clienteEscogido.dataset.regimen;
+  }else if(tipoClienteSeleccionado === 3){
+    let selectedElement = document.getElementById("E");
+    let clienteEscogido = selectedElement.selectedOptions[0];
+    inputRFC.value = clienteEscogido.dataset.rfc;
+    inputDomicilio.value = clienteEscogido.dataset.domicilio;
+    inputTelefono.value = clienteEscogido.dataset.telefono;
+    inputMail.value = clienteEscogido.dataset.mail;
+    inputRegimen.value = clienteEscogido.dataset.regimen;
+  }
+}
+
+function mostrarOpcion() {
+  // Obtener las referencias a los elementos
+  let divClienteNoRegistrado = document.getElementById("divCNR");
+  let divClienteRegistrado = document.getElementById("divCR");
+  let divClienteEmpresa = document.getElementById("divE");
+
+  let selectedCliente = document.getElementById("opcionCliente").value;
+
+  if(selectedCliente === "CNR"){
+    divClienteNoRegistrado.style.display = "flex";
+    divClienteRegistrado.style.display = "none";
+    divClienteEmpresa.style.display = "none";
+    tipoClienteSeleccionado = 1;
+    cargarDatosClientes();
+  }else if(selectedCliente === "CR"){
+    divClienteNoRegistrado.style.display = "none";
+    divClienteRegistrado.style.display = "flex";
+    divClienteEmpresa.style.display = "none";
+    tipoClienteSeleccionado = 2;
+    cargarDatosClientes();
+  }else if(selectedCliente === "E"){
+    divClienteNoRegistrado.style.display = "none";
+    divClienteRegistrado.style.display = "none";
+    divClienteEmpresa.style.display = "flex";
+    tipoClienteSeleccionado = 3;
+    cargarDatosClientes();
+  }else{
+    alert("no sabes nada");
+  }
+
+}
+
+function cargarClientesRegistrados() {
+  fetch('APIclientesconregistro.php')
+      .then((response) => response.text())
+      .then((data) => {
+          let selectElement = document.getElementById("CR");
+          selectElement.innerHTML = data;
+      })
+      .catch((error) => console.error("Error:", error));
+}
+
+function cargarClientesEmpresariales() {
+  fetch('APIclientesempresariales.php')
+      .then((response) => response.text())
+      .then((data) => {
+          let selectElement = document.getElementById("E");
+          selectElement.innerHTML = data;
+      })
+      .catch((error) => console.error("Error:", error));
+}
+
 function generarPDF() {
+
+  let nombreCliente = tipoClienteSeleccionado === 1 
+    ? document.getElementById("CNR").value 
+    : tipoClienteSeleccionado === 2 
+    ? document.getElementById("CR").value 
+    : tipoClienteSeleccionado === 3 
+    ? document.getElementById("E").value 
+    : 'Cliente No Registrado';
+
+  let fechaSeleccionada = document.getElementById("fechaEntrega").value !== "" 
+    ? "Fecha Aproximada de Entrega: " + document.getElementById("fechaEntrega").value 
+    : "";
+
+  let clienteDomicilio = tipoClienteSeleccionado === 1 
+    ? "" 
+    : tipoClienteSeleccionado === 2 
+    ? document.getElementById("domicilio").value 
+    : tipoClienteSeleccionado === 3 
+    ? document.getElementById("domicilio").value 
+    : 'Domicilio no disponible';
+
+  let clienteTelefono = tipoClienteSeleccionado === 1 
+    ? "" 
+    : tipoClienteSeleccionado === 2 
+    ? document.getElementById("telefono").value 
+    : tipoClienteSeleccionado === 3 
+    ? document.getElementById("telefono").value 
+    : 'Teléfono no disponible';
+
+let clienteCorreo = tipoClienteSeleccionado === 1 
+    ? "" 
+    : tipoClienteSeleccionado === 2 
+    ? document.getElementById("mail").value 
+    : tipoClienteSeleccionado === 3 
+    ? document.getElementById("mail").value 
+    : 'Email no disponible';
+
+/*let clienteRegimen = tipoClienteSeleccionado === 1 
+    ? "" 
+    : tipoClienteSeleccionado === 2 
+    ? document.getElementById("regimen").value 
+    : tipoClienteSeleccionado === 3 
+    ? document.getElementById("regimen").value 
+    : 'Régimen no disponible';
+
+let clienteRFC = tipoClienteSeleccionado === 1 
+    ? "" 
+    : tipoClienteSeleccionado === 2 
+    ? document.getElementById("rfc").value 
+    : tipoClienteSeleccionado === 3 
+    ? document.getElementById("rfc").value 
+    : 'RFC no disponible';*/
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
@@ -120,48 +236,47 @@ function generarPDF() {
     // Información de contacto en gris
     doc.setFontSize(10);
     doc.setTextColor(105, 105, 105); // Gris
-    doc.text("Albania, Tirane ish-Dogana, Durres 2001", 200, 18, { align: "right" });
-    doc.text("(+355) 069 11 11 111", 200, 23, { align: "right" });
-    doc.text("email@example.com", 200, 28, { align: "right" });
-    doc.text("info@example.al", 200, 33, { align: "right" });
-    doc.text("www.example.al", 200, 38, { align: "right" });
+    doc.text("Casa Amarilla 117, col. Reforma Pensil, Miguel Hidalgo, CDMX", 200, 18, { align: "right" });
+    doc.text("(+52) 55 4357 5320", 200, 23, { align: "right" });
+    doc.text("ventasexpresa@yahoo.com", 200, 28, { align: "right" });
+    doc.text("ventas@expresagrafic.com.mx", 200, 33, { align: "right" });
+    doc.text("www.expresagrafic.com.mx", 200, 38, { align: "right" });
 
     doc.line(5, 42, 205, 42 )
 
     // Información del cliente y fecha
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0); // Negro
-    doc.text("Cliente: Juan Pérez", 10, 50);
-    doc.text("Fecha: 2024-09-08", 10, 55);
+    doc.setFontSize(10);
+    doc.setTextColor(105, 105, 105); // Gris
+    doc.text(`Cotización emitida a:`, 10, 50);
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`${nombreCliente}`, 10, 55);
+    doc.setFontSize(10);
+    doc.setTextColor(105, 105, 105); // Gris
+    doc.text(`${clienteDomicilio}`, 10, 60);
+    doc.text(`${clienteTelefono}`, 10, 65);
+    doc.text(`${clienteCorreo}`, 10, 70);
+    doc.text(fechaSeleccionada, 10, 55);
+    doc.setFontSize(14);
+    doc.setTextColor(0, 0, 0);
+    doc.text(`Cotización #: `, 10, 55);
 
     
 
     doc.autoTable({
       head: [['Descripción', 'Cantidad', 'Precio Unitario', 'Monto']],
       body: productos,
-      startY: 70
+      startY: 75
     });
 
     // Totales
     doc.setFontSize(12);
-    doc.text("Subtotal: $265.00", 140, doc.previousAutoTable.finalY + 10);
-    doc.text("Impuesto (16%): $42.40", 140, doc.previousAutoTable.finalY + 15);
-    doc.text("Total: $307.40", 140, doc.previousAutoTable.finalY + 20);
+    doc.text("Subtotal: $3500.00", 140, doc.previousAutoTable.finalY + 10);
+    
+    doc.text("Total: $4060.00", 140, doc.previousAutoTable.finalY + 20);
 
     // Generar el PDF
     doc.save("factura.pdf");
   };
 }
-
-function cargarClientesRegistrados() {
-  fetch('APIclientesconregistro.php')
-      .then((response) => response.text())
-      .then((data) => {
-          let selectElement = document.getElementById("CR");
-          selectElement.innerHTML = data;
-      })
-      .catch((error) => console.error("Error:", error));
-}
-
-
 
