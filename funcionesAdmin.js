@@ -5,10 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
   cargarClientesEmpresariales();
   cargarDatosClientes();
   cargarCategorias();
-  cargarNombreProductos();
+  mostrarProd();
 });
 
 let tipoClienteSeleccionado = 1;
+let tipoProducto = 1;
 
 function mostrarProd(selectedProdType) {
   // Obtener las referencias a los elementos
@@ -18,7 +19,7 @@ function mostrarProd(selectedProdType) {
   let divNombreProducto = document.getElementById("productoNombre");
   let divBusquedaPorNombre = document.getElementById("busquedaNombre");
   let divResultadosBusqueda = document.getElementById("prodsBusqueda");
-
+  
 
   if(selectedProdType === "PNR"){
     divTextoProductoLibre.style.display = "flex";
@@ -27,6 +28,8 @@ function mostrarProd(selectedProdType) {
     divNombreProducto.style.display = "none";
     divBusquedaPorNombre.style.display = "none";
     divResultadosBusqueda.style.display = "none";
+    document.getElementById("precio").value = "";
+    tipoProducto = 1;
   }else if(selectedProdType === "PR"){
     cargarCategorias();
     divTextoProductoLibre.style.display = "none";
@@ -36,6 +39,8 @@ function mostrarProd(selectedProdType) {
     divBusquedaPorNombre.style.display = "none";
     divResultadosBusqueda.style.display = "none";
     cargarSubcategorias();
+    precioProd();
+    tipoProducto = 2;
   }else if(selectedProdType === "PB"){
     divTextoProductoLibre.style.display = "none";
     divCategoriaProducto.style.display = "none";
@@ -43,6 +48,8 @@ function mostrarProd(selectedProdType) {
     divNombreProducto.style.display = "none";
     divBusquedaPorNombre.style.display = "flex";
     divResultadosBusqueda.style.display = "flex";
+    tipoProducto = 3;
+    document.getElementById("precio").value = "";
   }
 
 }
@@ -66,8 +73,21 @@ function calcularSubtotal() {
 let filaSeleccionada = null; // Variable para almacenar la fila seleccionada
 
 function agregarProducto() {
-  // Obtener valores de los inputs
-  const nombre = document.getElementById('textProductoLibre').value;
+  let nombre = "";
+  if(tipoProducto === 1){
+    nombre = document.getElementById("textProductoLibre").value;
+  }else if(tipoProducto === 2){
+    let selectElement = document.getElementById("nombre");
+    let selectedOption = selectElement.selectedOptions[0];
+    nombre = selectedOption.value;
+  }else if(tipoProducto === 3){
+    let searchedElement = docuemnt.getElementById("prodsEnc");
+    let selectedPro = searchedElement.selectedOptions[0];
+    nombre = selectedPro.value;
+  }else{
+    nombre = "";
+  }
+
   const precioUnitario = parseFloat(document.getElementById('precio').value);
   const cantidad = parseFloat(document.getElementById('cantidad').value);
 
@@ -85,14 +105,14 @@ function agregarProducto() {
   const nuevaFila = tabla.insertRow();
 
   // Agregar celdas con el contenido
+  nuevaFila.insertCell().textContent = cantidad;
   nuevaFila.insertCell().textContent = nombre;
   nuevaFila.insertCell().textContent = precioUnitario.toFixed(2);
-  nuevaFila.insertCell().textContent = cantidad;
   nuevaFila.insertCell().textContent = subtotal.toFixed(2);
 
   // Agregar el registro al array y obtener el índice
   const idProducto = productos.length; // Usar un identificador único
-  productos.push({ id: idProducto, nombre, cantidad, precioUnitario: precioUnitario.toFixed(2), subtotal: subtotal.toFixed(2) });
+  productos.push([cantidad, nombre,precioUnitario.toFixed(2),subtotal.toFixed(2) ]);
 
   // Asignar el identificador al dataset de la fila
   nuevaFila.dataset.id = idProducto;
@@ -132,7 +152,12 @@ function eliminarFila() {
       tabla.deleteRow(filaSeleccionada.rowIndex-1);
 
       // También eliminar el producto del array
-      productos = productos.filter(producto => producto.id != id);
+      let index = productos.findIndex(producto => producto.id === id);
+
+      // Si el producto existe, eliminarlo usando 'splice'
+      
+        productos.splice(index-1, 1);
+      
 
       // Recalcular los subtotales
       calcularSubtotal();
@@ -319,8 +344,10 @@ function cargarCategorias() {
       .then((data) => {
           let selectElement = document.getElementById("categoria");
           selectElement.innerHTML = data;
+          cargarSubcategorias();
       })
       .catch((error) => console.error("Error:", error));
+      
 }
 function cargarSubcategorias() {
   let selected = document.getElementById("categoria");
@@ -331,8 +358,11 @@ function cargarSubcategorias() {
       .then((data) => {
           let selectElement = document.getElementById("subcategoria");
           selectElement.innerHTML = data;
+          cargarNombreProductos();
       })
       .catch((error) => console.error("Error:", error));
+
+      
 }
 function cargarNombreProductos() {
   let selectedSub = document.getElementById("subcategoria");
@@ -345,6 +375,24 @@ function cargarNombreProductos() {
           selectElement.innerHTML = data;
       })
       .catch((error) => console.error("Error:", error));
+}
+function buscarProducto() {
+  let productoBuscado = document.getElementById("busquedaName").value;
+  fetch('APIproductosBusqueda.php?nombreBusqueda='+encodeURIComponent(productoBuscado))
+      .then((response) => response.text())
+      .then((data) => {
+          let selectElement = document.getElementById("prodsEnc");
+          selectElement.innerHTML = data;
+          console.log("ya");
+      })
+      .catch((error) => console.error("Error:", error));
+}
+
+function precioProd() {
+  let selectElement = document.getElementById("nombre");
+  let selectedOption = selectElement.selectedOptions[0];
+  let precio = selectedOption.dataset.precio;
+  document.getElementById("precio").value = precio;
 }
 
 function generarPDF() {
@@ -384,6 +432,11 @@ let clienteCorreo = tipoClienteSeleccionado === 1
     : tipoClienteSeleccionado === 3 
     ? document.getElementById("mail").value 
     : 'Email no disponible';
+
+    let subtotal = parseFloat(document.getElementById("subtotal").value) || 0;
+    let totalIVA = subtotal * 1.16;
+    totalIVA = totalIVA.toFixed(2);
+    
 
 /*let clienteRegimen = tipoClienteSeleccionado === 1 
     ? "" 
@@ -438,24 +491,24 @@ let clienteRFC = tipoClienteSeleccionado === 1
     doc.text(`${clienteDomicilio}`, 10, 60);
     doc.text(`${clienteTelefono}`, 10, 65);
     doc.text(`${clienteCorreo}`, 10, 70);
-    doc.text(fechaSeleccionada, 10, 55);
+    doc.text(fechaSeleccionada, 200, 62,  { align: "right" });
     doc.setFontSize(14);
     doc.setTextColor(0, 0, 0);
-    doc.text(`Cotización #: `, 10, 55);
+    doc.text(`Cotización #: 801 `, 200, 55, { align: "right" });
 
     
 
     doc.autoTable({
-      head: [['Descripción', 'Cantidad', 'Precio Unitario', 'Monto']],
+      head: [['Cantidad', 'Producto', 'Precio Unitario', 'Monto']],
       body: productos,
       startY: 75
     });
 
     // Totales
     doc.setFontSize(12);
-    doc.text("Subtotal: $3500.00", 140, doc.previousAutoTable.finalY + 10);
+    doc.text(`Total: $${subtotal}`, 140, doc.previousAutoTable.finalY + 10);
     
-    doc.text("Total: $4060.00", 140, doc.previousAutoTable.finalY + 20);
+    doc.text(`Total + IVA: $${totalIVA}`, 140, doc.previousAutoTable.finalY + 20);
 
     // Generar el PDF
     doc.save("factura.pdf");

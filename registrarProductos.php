@@ -109,7 +109,7 @@ if (!isset($_SESSION['usuario_id'])) {
                 <div id="collapseAdministrarEmpresa" class="collapse" aria-labelledby="headingAdministrarEmpresa" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <!--<h6 class="collapse-header">Custom Administrar:</h6>-->
-                        <a class="collapse-item" href="registrarProductos.php">Productos</a>
+                        <a class="collapse-item" href="privilegiosUsers.php">Productos</a>
                         <a class="collapse-item" href="userCount.php">Sucursales</a>
                     </div>
                 </div>
@@ -187,8 +187,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 
                     <div style="display:flex;justify-content:space-between;">
-                    <h1>Cotización</h1>
-                    <input type="number" step="0.01" id="subtotal">
+                    <h1>Registro de Productos</h1>
                     </div>
                     
 
@@ -234,156 +233,57 @@ if (!isset($_SESSION['usuario_id'])) {
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+        <form action="subirProducto.php" method="post">
+            <!-- Inputs de texto -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe tu nombre" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="precio" class="form-label">Precio Unitario</label>
+                    <input type="number" step="0.01" class="form-control" id="precio" name="precio" placeholder="Precio del producto" required>
+                </div>
+            </div>
 
-                    <!-- Page Heading -->
-                    <div class="col-12 col-md-12 col-sm-12 d-flex mb-4 justify-content-between">
-                        <div class="col-4 col-md-4 col-sm-4">
-                            <div id="divCNR" style="display:flex; flex-direction:column;">
-                                <label for="clienteNoRegistrado">Cliente no Registrado</label>
-                                <input type="text" name="clienteNoRegistrado" id="CNR" placeholder="Nombre del cliente">
-                            </div>
+             <!-- Selects -->
+             <div class="row g-3 mt-3">
+                <div class="col-md-5">
+                    <label for="categoriaSelect" class="form-label">Categoria</label>
+                    <select class="form-select" id="categoriaSelect" name="categoriaSelect">
+                        <option value="1">México</option>
+                        <option value="2">España</option>
+                        <option value="3">Argentina</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    
+                </div>
+                <div class="col-md-5">
+                    <label for="subcategoriaSelect" class="form-label">Subcategoria</label>
+                    <select class="form-select" id="subcategoriaSelect" name="subcategoriaSelect">
+                        <option value="1">Masculino</option>
+                        <option value="2">Femenino</option>
+                        <option value="3">Otro</option>
+                    </select>
+                </div>
+            </div>
 
-                            <div id="divCR" style="display:none; flex-direction:column;">
-                                <label for="clienteRegistrado">Cliente Registrado</label>
-                                <select id="CR" name="clienteRegistrado" onchange="cargarDatosClientes()">
-                                    
-                                </select>
-                            </div>
+            <div class="row g-3 mt-3">
+                <div class="col-md-6">
+                    <label for="categoria" class="form-label">Categoria</label>
+                    <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Categoria del producto" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="subcategoria" class="form-label">Subcategoría</label>
+                    <input type="text" class="form-control" id="subcategoria" name="subcategoria" placeholder="Subcategoria del producto" required>
+                </div>
+            </div>
 
-                            <div id="divE" style="display:none; flex-direction:column;">
-                                <label for="empresa">Cliente Empresa:</label>
-                                <select name="empresa" id="E" onchange="cargarDatosClientes()">
-                                  
-                                </select>
-                            </div>
-                            <input type="hidden" id="rfc">
-                            <input type="hidden" id="domicilio">
-                            <input type="hidden" id="telefono">
-                            <input type="hidden" id="mail">
-                            <input type="hidden" id="regimen">
-                        </div>
+           
 
-                        <div class="col-2 col-md-2 col-sm-4" style="display:flex; flex-direction:column; max-width:30%">
-                            <label for="opcionCliente">Cliente tipo:</label>
-                            <select name="opcionCliente" id="opcionCliente" onchange="mostrarOpcion()">
-                                <option value="CNR">Sin Registro</option>
-                                <option value="CR">Con Registro</option>
-                                <option value="E">Empresarial</option>
-                            </select>
-                        </div>
-
-                        <div class="col-2 col-md-2 col-sm-4" style="display:flex; flex-direction:column; max-width:30%">
-                            <label for="fechaEntrega">Fecha Entrega:</label>
-                            <input type="date" name="fechaEntrega" id="fechaEntrega">
-                        </div>
-
-                        <div class="col-1 col-md-1 d-none d-md-block text-center">
-                            <a onclick="generarPDF()" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
-                        </div>
-
-                    </div>
-
-                    <hr class="sidebar-divider mb-4 my-0">
-
-                    <div class="col-12 mb-4" style="display:flex;flex-direction:row;justify-content:space-around;align-items:center">
-                        
-                            <div>
-                                <label for="PNR">Producto sin registro</label>
-                                <input name="tipoprod" id="PNR" type="radio" value="PNR" checked onchange="mostrarProd('PNR')">
-                            </div>
-
-                            <div>
-                                <label for="PR">Producto Registrado</label>
-                                <input name="tipoprod" id="PR" type="radio" value="PR" onchange="mostrarProd('PR')">
-                            </div>
-
-                            <div>
-                                <label for="PB">Buscar Producto</label>
-                                <input name="tipoprod" id="PB" type="radio" value="PB" onchange="mostrarProd('PB')">
-                            </div>
-
-                            <div class="col-1 text-center">
-                                <a onclick="agregarProducto()" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i>Añadir</a>
-                            </div>
-
-                            <div class="col-1 text-center">
-                                <a onclick="eliminarFila()" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i class="fas fa-minus fa-sm text-white-50"></i>Eliminar</a>
-                            </div>
-                        
-                    </div>
-
-                    <div class="col-12 col-md-12 col-sm-12 mb-4 d-flex justify-content-between align-items-center">
-
-                        <div class="col-9" id="productoLibre" style="display:flex; flex-direction:column;">
-                            <label for="textProductoLibre">Escribe el Producto:</label>
-                            <input type="text" id="textProductoLibre">
-                        </div>
-
-                        <div class="col-3" id="productoCategoria" style="display:none; flex-direction:column;">
-                            <label for="categoria">Categoria:</label>
-                            <select name="categoria" id="categoria" onchange="cargarSubcategorias()">
-
-                            </select>
-                        </div>
-                        <div class="col-3" id="productoSubcategoria" style="display:none; flex-direction:column;">
-                            <label for="subcategoria">Subcategoria:</label>
-                            <select name="subcategoria" id="subcategoria" onchange="cargarNombreProductos()">
-
-                            </select>
-                        </div>
-                        <div class="col-3" id="productoNombre" style="display:none; flex-direction:column;">
-                            <label for="nombre">Nombre:</label>
-                            <select name="nombre" id="nombre" onchange="precioProd()">
-
-                            </select>
-                        </div>
-
-                        <div class="col-4" id="busquedaNombre" style="display:none; flex-direction:column;">
-                            <label for="busquedaName">Pon una palabra clave:</label>
-                            <input type="text" id="busquedaName" oninput="buscarProducto()">
-                        </div>
-                        
-                        <div class="col-5" id="prodsBusqueda" style="display:none; flex-direction:column;">
-                            <label for="prodsEnc">Productos Encontrados:</label>
-                            <select id="prodsEnc">
-
-                            </select>
-                        </div>
-
-                        <div class="col-2" id="precioInput" style="display:flex; flex-direction:column;">
-                            <label for="precio">Precio:</label>
-                            <input type="number" step="0.01" id="precio">
-                        </div>
-
-                        <div class="col-1" class="col-2" style="display:flex; flex-direction:column;">
-                            <label for="cantidad">Cantidad:</label>
-                            <input type="number" name="cantidad" id="cantidad" step="0.01">
-                        </div>
-
-
-
-                    </div>
-                    <!-- Content Row -->
-                    <div class="row">
-                        <div class="col-12">
-                            <table id="tablaCotizacion" class="table table-bordered table-hover table-striped">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col">Cantidad</th>
-                                        <th scope="col">Descripción</th>
-                                        <th scope="col">Precio Unitario</th>
-                                        <th scope="col">Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <a onclick="generarPDF()" class="d-block d-md-none d-lg-none mb-4 mt-2 btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
-                    </div>
-
+            <input type="submit" value="Crear">
+        </form>
 
                 </div>
             </div>
