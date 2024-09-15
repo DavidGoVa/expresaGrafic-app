@@ -29,13 +29,12 @@ if (!isset($_SESSION['usuario_id'])) {
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+   
 
 </head>
 
-<body id="page-top">
+<div id="page-top">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -186,10 +185,10 @@ if (!isset($_SESSION['usuario_id'])) {
                     <!-- Topbar Search -->
 
 
-                    <div style="display:flex;justify-content:space-between;">
-                    <h1>Registro de Productos</h1>
+                    <div class="d-none d-md-inline d-lg-inline" style="display:flex;justify-content:space-between;">
+                        <h1>Registro de Productos</h1>
                     </div>
-                    
+
 
 
 
@@ -233,68 +232,85 @@ if (!isset($_SESSION['usuario_id'])) {
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-        <form action="subirProducto.php" method="post">
-            <!-- Inputs de texto -->
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe tu nombre" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="precio" class="form-label">Precio Unitario</label>
-                    <input type="number" step="0.01" class="form-control" id="precio" name="precio" placeholder="Precio del producto" required>
+                    <div class="row justify-content-around mb-4">
+                        <button id="ecp" class="btn btn-primary" onclick="ensenarCrearProducto()" disabled>Crear</button>
+                        <button id="eep" class="btn btn-warning" onclick="ensenarEditarProducto()">Editar</button>
+                    </div>
+                    <div id="crearP">
+                        <form action="subirProducto.php" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="nombre" class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe tu nombre" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="precio" class="form-label">Precio Unitario</label>
+                                    <input type="number" step="0.01" class="form-control" id="precio" name="precio" placeholder="Precio del producto" required>
+                                </div>
+                            </div>
+
+                            <!-- Selects -->
+                            <div class="row g-3 mt-3">
+                                <div class="col-md-6 mb-2" style="display:flex;flex-direction:column;">
+                                    <label id="labelCat" for="categoriaSelect" class="form-label">Categoria</label>
+                                    <select class="form-select" id="categoriaSelect" name="categoriaSelect">
+                                        <option value="1">categoria1</option>
+                                        <option value="2">categoria2</option>
+                                        <option value="3">categoria3</option>
+                                    </select>
+                                    <label id="oLabelCat" for="categoria" class="form-label" style="display:none;">Categoria</label>
+                                    <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Categoria del producto" style="display:none;">
+                                    <div>
+                                        <label for="oC" class="form-label">Añadir nueva categoria</label>
+                                        <input type="checkbox" id="oC" name="oC" onchange="mostrarInputCategoria()">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-2" style="display:flex;flex-direction:column;">
+                                    <label for="subcategoriaSelect" id="labelSubcategoria" class="form-label">Subcategoria</label>
+                                    <select class="form-select" id="subcategoriaSelect" name="subcategoriaSelect">
+                                        <option value="1">sucategoria1</option>
+                                        <option value="2">sucategoria2</option>
+                                        <option value="3">sucategoria3</option>
+                                    </select>
+                                    <label for="subcategoria" id="labeloSub" class="form-label" style="display:none;">Subcategoría</label>
+                                    <input type="text" class="form-control" id="subcategoria" name="subcategoria" placeholder="Subcategoria del producto" style="display:none;">
+                                    <div>
+                                        <label for="osC" class="form-label">Añadir nueva subcategoria</label>
+                                        <input type="checkbox" id="osC" name="osC" onchange="mostrarInputSubCategoria()">
+                                    </div>
+                                </div>
+                                <div class="text-center"><button class="btn btn-primary">Crear Producto</button></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row mt-4" id="editarP" style="display:none;">
+                        <label for="busquedaProductoTabla">Buscar Producto: </label>
+                        <input type="text" class="form-control" name="busquedaProductoTabla" id="busquedaProductoTabla" oninput="buscarEnLaTabla()">
+                        <div class="table-responsive">
+                            <table id="tablaProductos" class="table table-striped table-bordered display">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Precio</th>
+                                        <th>Categoria</th>
+                                        <th>Subcategoria</th>
+                                        <th>Guardar</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productosEnTabla">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-             <!-- Selects -->
-             <div class="row g-3 mt-3">
-                <div class="col-md-5">
-                    <label for="categoriaSelect" class="form-label">Categoria</label>
-                    <select class="form-select" id="categoriaSelect" name="categoriaSelect">
-                        <option value="1">México</option>
-                        <option value="2">España</option>
-                        <option value="3">Argentina</option>
-                    </select>
-                </div>
-                <div class="col-md-1">
-                    
-                </div>
-                <div class="col-md-5">
-                    <label for="subcategoriaSelect" class="form-label">Subcategoria</label>
-                    <select class="form-select" id="subcategoriaSelect" name="subcategoriaSelect">
-                        <option value="1">Masculino</option>
-                        <option value="2">Femenino</option>
-                        <option value="3">Otro</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row g-3 mt-3">
-                <div class="col-md-6">
-                    <label for="categoria" class="form-label">Categoria</label>
-                    <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Categoria del producto" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="subcategoria" class="form-label">Subcategoría</label>
-                    <input type="text" class="form-control" id="subcategoria" name="subcategoria" placeholder="Subcategoria del producto" required>
-                </div>
-            </div>
-
-           
-
-            <input type="submit" value="Crear">
-        </form>
-
-                </div>
-            </div>
-
         </div>
-        <!-- /.container-fluid -->
-
     </div>
-    <!-- End of Main Content -->
+    <!-- /.container-fluid -->
 
-    <!-- Footer -->
     <footer class="sticky-footer bg-white">
         <div class="container my-auto">
             <div class="copyright text-center my-auto">
@@ -302,13 +318,6 @@ if (!isset($_SESSION['usuario_id'])) {
             </div>
         </div>
     </footer>
-    <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
@@ -333,9 +342,8 @@ if (!isset($_SESSION['usuario_id'])) {
             </div>
         </div>
     </div>
+
     <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
-
-
 
     <script src="funcionesAdmin.js"></script>
     <!-- Bootstrap core JavaScript-->
@@ -347,9 +355,6 @@ if (!isset($_SESSION['usuario_id'])) {
 
     <!-- Custom scripts for all Guardados-->
     <script src="js/sb-admin-2.min.js"></script>
-
-
-
 
 </body>
 
