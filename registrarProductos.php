@@ -54,7 +54,7 @@ if (!isset($_SESSION['usuario_id'])) {
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Cotización -->
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="index.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Cotización</span></a>
@@ -100,7 +100,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAdministrarEmpresa" aria-expanded="true" aria-controls="collapseAdministrarEmpresa">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Administrar Empresa</span>
@@ -238,25 +238,17 @@ if (!isset($_SESSION['usuario_id'])) {
                     </div>
                     <div id="crearP">
                         <form action="subirProducto.php" method="post">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="nombre" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe tu nombre" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="precio" class="form-label">Precio Unitario</label>
-                                    <input type="number" step="0.01" class="form-control" id="precio" name="precio" placeholder="Precio del producto" required>
-                                </div>
-                            </div>
-
+                            
                             <!-- Selects -->
                             <div class="row g-3 mt-3">
                                 <div class="col-md-6 mb-2" style="display:flex;flex-direction:column;">
                                     <label id="labelCat" for="categoriaSelect" class="form-label">Categoria</label>
                                     <select class="form-select" id="categoriaSelect" name="categoriaSelect">
-                                        <option value="1">categoria1</option>
-                                        <option value="2">categoria2</option>
-                                        <option value="3">categoria3</option>
+                                        <option value="Impresion">Impresión</option>
+                                        <option value="Impresion"></option>
+                                        <option value="Impresion">Impresión</option>
+                                        <option value="Impresion">Impresión</option>
+                                        <option value="Impresion">Impresión</option>
                                     </select>
                                     <label id="oLabelCat" for="categoria" class="form-label" style="display:none;">Categoria</label>
                                     <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Categoria del producto" style="display:none;">
@@ -269,9 +261,7 @@ if (!isset($_SESSION['usuario_id'])) {
                                 <div class="col-md-6 mb-2" style="display:flex;flex-direction:column;">
                                     <label for="subcategoriaSelect" id="labelSubcategoria" class="form-label">Subcategoria</label>
                                     <select class="form-select" id="subcategoriaSelect" name="subcategoriaSelect">
-                                        <option value="1">sucategoria1</option>
-                                        <option value="2">sucategoria2</option>
-                                        <option value="3">sucategoria3</option>
+                                        
                                     </select>
                                     <label for="subcategoria" id="labeloSub" class="form-label" style="display:none;">Subcategoría</label>
                                     <input type="text" class="form-control" id="subcategoria" name="subcategoria" placeholder="Subcategoria del producto" style="display:none;">
@@ -280,8 +270,20 @@ if (!isset($_SESSION['usuario_id'])) {
                                         <input type="checkbox" id="osC" name="osC" onchange="mostrarInputSubCategoria()">
                                     </div>
                                 </div>
-                                <div class="text-center"><button class="btn btn-primary">Crear Producto</button></div>
+                                
                             </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="nombre" class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Escribe tu nombre" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="precio" class="form-label">Precio Unitario</label>
+                                    <input type="number" step="0.01" class="form-control" id="precio" name="precio" placeholder="Precio del producto" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="text-center"><button class="btn btn-primary">Crear Producto</button></div>
                         </form>
                     </div>
                     <div class="row mt-4" id="editarP" style="display:none;">

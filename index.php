@@ -109,7 +109,8 @@ if (!isset($_SESSION['usuario_id'])) {
                 <div id="collapseAdministrarEmpresa" class="collapse" aria-labelledby="headingAdministrarEmpresa" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <!--<h6 class="collapse-header">Custom Administrar:</h6>-->
-                        <a class="collapse-item" href="registrarProductos.php">Productos</a>
+                        <a class="collapse-item" href="productosLista.php">Productos</a>
+                        <a class="collapse-item" href="registrarProductos.php">Añadir Productos</a>
                         <a class="collapse-item" href="userCount.php">Sucursales</a>
                     </div>
                 </div>
@@ -188,7 +189,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
                     <div style="display:flex;justify-content:space-between;">
                     <h1>Cotización</h1>
-                    <input type="number" step="0.01" id="subtotal">
+                    <input type="hidden" step="0.01" id="subtotal">
                     </div>
                     
 
@@ -312,50 +313,53 @@ if (!isset($_SESSION['usuario_id'])) {
                         
                     </div>
 
-                    <div class="col-12 col-md-12 col-sm-12 mb-4 d-flex justify-content-between align-items-center">
-
-                        <div class="col-9" id="productoLibre" style="display:flex; flex-direction:column;">
-                            <label for="textProductoLibre">Escribe el Producto:</label>
-                            <input type="text" id="textProductoLibre">
-                        </div>
-
-                        <div class="col-3" id="productoCategoria" style="display:none; flex-direction:column;">
+                    <div class="col-12 col-md-12 col-sm-12 mb-4 justify-content-between align-items-center" id="divdivC" style="display:none;">
+                    <div class="row col-12" id="divCategorias">
+                        <div class="col-4" id="productoCategoria" style="flex-direction:column;">
                             <label for="categoria">Categoria:</label>
                             <select name="categoria" id="categoria" onchange="cargarSubcategorias()">
 
                             </select>
                         </div>
-                        <div class="col-3" id="productoSubcategoria" style="display:none; flex-direction:column;">
+                        <div class="col-4" id="productoSubcategoria" style="flex-direction:column;">
                             <label for="subcategoria">Subcategoria:</label>
                             <select name="subcategoria" id="subcategoria" onchange="cargarNombreProductos()">
 
                             </select>
                         </div>
-                        <div class="col-3" id="productoNombre" style="display:none; flex-direction:column;">
+                        <div class="col-4" id="productoNombre" style="flex-direction:column;">
                             <label for="nombre">Nombre:</label>
                             <select name="nombre" id="nombre" onchange="precioProd()">
 
                             </select>
                         </div>
+                        </div>        
+                </div>
+                    <div class="col-12 col-md-12 col-sm-12 mb-4 d-flex justify-content-between align-items-center">
 
-                        <div class="col-4" id="busquedaNombre" style="display:none; flex-direction:column;">
+                        <div class="col-6" id="productoLibre" style="display:flex; flex-direction:column;">
+                            <label for="textProductoLibre">Escribe el Producto:</label>
+                            <input type="text" id="textProductoLibre">
+                        </div>                        
+
+                        <div class="col-3" id="busquedaNombre" style="display:none; flex-direction:column;">
                             <label for="busquedaName">Pon una palabra clave:</label>
                             <input type="text" id="busquedaName" oninput="buscarProducto()">
                         </div>
                         
-                        <div class="col-5" id="prodsBusqueda" style="display:none; flex-direction:column;">
+                        <div class="col-3" id="prodsBusqueda" style="display:none; flex-direction:column;">
                             <label for="prodsEnc">Productos Encontrados:</label>
                             <select id="prodsEnc">
 
                             </select>
                         </div>
 
-                        <div class="col-2" id="precioInput" style="display:flex; flex-direction:column;">
+                        <div class="col-3" id="precioInput" style="display:flex; flex-direction:column;">
                             <label for="precio">Precio:</label>
                             <input type="number" step="0.01" id="precio">
                         </div>
 
-                        <div class="col-1" class="col-2" style="display:flex; flex-direction:column;">
+                        <div class="col-3" style="display:flex; flex-direction:column;">
                             <label for="cantidad">Cantidad:</label>
                             <input type="number" name="cantidad" id="cantidad" step="0.01">
                         </div>
@@ -380,8 +384,13 @@ if (!isset($_SESSION['usuario_id'])) {
                                 </tbody>
                             </table>
                         </div>
-
-                        <a onclick="generarPDF()" class="d-block d-md-none d-lg-none mb-4 mt-2 btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
+                        <div class="col-12 justify-content-between">
+                        <a onclick="generarPDF()" class=" d-md-none d-lg-none btn btn-sm btn-danger shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i>Generar PDF</a>
+                        
+                                <a onclick="agregarProducto()" class="d-md-none d-lg-none btn btn-sm btn-success shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i>Añadir</a>
+                            
+                                <a onclick="eliminarFila()" class="d-md-none d-lg-none btn btn-sm btn-warning shadow-sm"><i class="fas fa-minus fa-sm text-white-50"></i>Eliminar</a>
+                                </div>
                     </div>
 
 
@@ -438,6 +447,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 
     <script src="funcionesAdmin.js"></script>
+    <script src="funcionesProductos.js"></script>
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

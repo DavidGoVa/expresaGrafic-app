@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     function wm(){
-        if(mail.value.endsWith("@jci.com")){
+        if(mail.value.endsWith("@yahoo.com.mx")){
             esjci = true;
             mail.style.boxShadow = "0 0 0 .2rem rgba(78,115,223,.25)";
             wmail.style.display = "none";

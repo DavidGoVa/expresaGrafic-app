@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   cargarClientesEmpresariales();
   cargarDatosClientes();
-  cargarCategorias();
   mostrarProd();
   
 });
@@ -19,6 +18,8 @@ function mostrarProd(selectedProdType) {
   let divNombreProducto = document.getElementById("productoNombre");
   let divBusquedaPorNombre = document.getElementById("busquedaNombre");
   let divResultadosBusqueda = document.getElementById("prodsBusqueda");
+  let divCategorias = document.getElementById("divdivC");
+
 
   if (selectedProdType === "PNR") {
     divTextoProductoLibre.style.display = "flex";
@@ -28,6 +29,7 @@ function mostrarProd(selectedProdType) {
     divBusquedaPorNombre.style.display = "none";
     divResultadosBusqueda.style.display = "none";
     document.getElementById("precio").value = "";
+    divCategorias.style.display = "none";
     tipoProducto = 1;
   } else if (selectedProdType === "PR") {
     cargarCategorias();
@@ -37,6 +39,8 @@ function mostrarProd(selectedProdType) {
     divNombreProducto.style.display = "flex";
     divBusquedaPorNombre.style.display = "none";
     divResultadosBusqueda.style.display = "none";
+    divCategorias.style.display = "flex";
+    divCategorias.style.justifyContent = "space-around";
     cargarSubcategorias();
     precioProd();
     tipoProducto = 2;
@@ -47,6 +51,7 @@ function mostrarProd(selectedProdType) {
     divNombreProducto.style.display = "none";
     divBusquedaPorNombre.style.display = "flex";
     divResultadosBusqueda.style.display = "flex";
+    divCategorias.style.display = "none";
     tipoProducto = 3;
     document.getElementById("precio").value = "";
   }
@@ -291,6 +296,14 @@ function mostrarOpcion() {
   }
 }
 
+function actualizarDatos(iterador) {
+  document.getElementById("nombreFormulario" + iterador).value = document.getElementById("nombreInputModificar" + iterador).value;
+  document.getElementById("precioFormulario" + iterador).value = document.getElementById("precioInputModificar" + iterador).value;
+  document.getElementById("categoriaFormulario" + iterador).value = document.getElementById("categoriaInputModificar" + iterador).value;
+  document.getElementById("subcategoriaFormulario" + iterador).value = document.getElementById("subcategoriaInputModificar" + iterador).value;
+}
+
+
 function cargarClientesRegistrados() {
   fetch("APIclientesconregistro.php")
     .then((response) => response.text())
@@ -332,6 +345,8 @@ function cargarSubcategorias() {
     .then((data) => {
       let selectElement = document.getElementById("subcategoria");
       selectElement.innerHTML = data;
+      let categorias = document.getElementById("categoriaSelect");
+      categorias.innerHTML = data;
       cargarNombreProductos();
     })
     .catch((error) => console.error("Error:", error));
@@ -519,13 +534,72 @@ let clienteRFC = tipoClienteSeleccionado === 1
 
     // Totales
     doc.setFontSize(12);
-    doc.text(`Total: $${subtotal}`, 140, doc.previousAutoTable.finalY + 10);
+    doc.text(`Total: $${subtotal}`, 150, doc.previousAutoTable.finalY + 5);
 
     doc.text(
       `Total + IVA: $${totalIVA}`,
-      140,
-      doc.previousAutoTable.finalY + 20
+      150,
+      doc.previousAutoTable.finalY + 10
     );
+
+    let previousTableEnd = doc.lastAutoTable.finalY;
+    
+
+// Crear la segunda tabla 50 unidades debajo de la anterior
+doc.autoTable({
+  head: [["PAGOS CON FACTURA", "PAGOS SIN FACTURA"]],
+  body: [[
+  `SERGIO JULIAN GOMEZ MORENO
+  BANCO: BANORTE CTA.: 0586324183
+  CLABE TRANSFERENCIA: 072180005863241836
+  NO SE PROCESA NINGÚN TRABAJO QUE NO TENGA ANTICIPO O PAGO`,
+  
+  `BANCO:NVIO
+  BENEFICIARIO: SERGIO JULIAN GOMEZ MORENO
+  CLABE: 710969000012983630`]],
+  startY: previousTableEnd + 15,
+  headStyles: {
+    fillColor: [211, 211, 211], // Color de fondo en RGB (en este caso azul)
+    textColor: [0, 0, 0],
+  },
+});
+let scaleFactor = 0.8; // Escala del 80%
+
+doc.autoTable({
+  head: [[
+    { content: `Términos y Condiciones EXPRESAGRAFIC`, styles: { halign: 'center' } },
+    { content: `Términos y Condiciones Proyect Laser MX`, styles: { halign: 'center' } },
+    { content: `Garantías`, styles: { halign: 'center' } }
+  ]],
+  body: [[
+    { content: `La aceptación de la presente requiere confirmación por parte del cliente, aceptando los materiales, textos, o gráficos aquí especificados, por lo que se solicita leer atentamente la descripción. Cualquier cambio una vez iniciados los trabajos tendrán un costo que deberá ser cubierto por el cliente. La política de pago es 50% de anticipo para iniciar la producción y 50% en la entrega.
+    No se realizan pantones y la igualación debe ser aprobada por el cliente en el material físico. La impresión offset tiene una variación de tono según sea el tiraje o el diseño, por lo que no se aceptarán reclamaciones por variación de tono.
+    Una vez recibido el material por el cliente, no se aceptan devoluciones. La vigencia de esta cotización es de 10 días.`, styles: { halign: 'justify' } },
+    { content: `Las condiciones de pago son 70% anticipo y 30% contra aviso de entrega.
+    El costo está basado en el volumen acordado, cualquier cambio requiere nueva cotización. Se solicita que el cliente proporcione los dibujos (vectorizados y a escala real) en formato DXF, DWG (AutoCad). Si no los tiene y requiere el trabajo, el desarrollo de los dibujos tiene un costo y este depende de su complejidad.
+    No se aceptan reclamaciones por diseños enviados a escala o vectores que no se hayan hecho en nuestro estudio. Toda modificación tiene costo. No hay reembolso en materiales. Esta cotización tiene vigencia de 10 días.`, styles: { halign: 'justify' } },
+    { content: `Solo hay garantía al presentar por escrito la solicitud, en un plazo de 72 hrs.
+    EXPRESAGRAFIC y Proyect Laser Mx no se responsabilizan en materiales ajenos a nuestra compañía.
+    La garantía no aplica si falta material o este viene enmendado o maltratado. No hay devolución de dinero, solo de servicio o productos que proveemos. La producción de las garantías tiene un tiempo de entrega de 30 días hábiles.`, styles: { halign: 'justify' } }
+  ]],
+  startY: doc.lastAutoTable.finalY + 5,
+  headStyles: {
+    fillColor: [211, 211, 211], // Color de fondo gris claro
+    textColor: [0, 0, 0], // Color del texto
+    fontStyle: 'bold', // Estilo de texto en negrita
+  },
+  styles: {
+    
+    fontSize: 10 * scaleFactor, // Reducir el tamaño de la fuente
+  },
+  columnStyles: {
+    0: { cellWidth: 80 * scaleFactor }, // Ajustar el ancho de la columna 1
+    1: { cellWidth: 80 * scaleFactor }, // Ajustar el ancho de la columna 2
+    2: { cellWidth: 80 * scaleFactor }, // Ajustar el ancho de la columna 3
+  },
+});
+
+
 
     // Generar el PDF
     doc.save("factura.pdf");
