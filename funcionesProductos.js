@@ -1,19 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
-    
+    cargarCategoriasP();
   });
 
-  function cargarCategorias() {
+  function cargarCategoriasP() {
     fetch("APIproductosconregistro.php")
       .then((response) => response.text())
       .then((data) => {
-        let selectElement = document.getElementById("categoria");
+        let selectElement = document.getElementById("categoriaSelect");
         selectElement.innerHTML = data;
-        cargarSubcategorias();
+        cargarSubcategoriasP();
       })
       .catch((error) => console.error("Error:", error));
   }
-  function cargarSubcategorias() {
-    let selected = document.getElementById("categoria");
+  function cargarSubcategoriasP() {
+    let selected = document.getElementById("categoriaSelect");
     let option = selected.selectedOptions[0];
     let opcionSeleccionada = option.value;
     fetch(
@@ -21,11 +21,8 @@ document.addEventListener("DOMContentLoaded", function () {
     )
       .then((response) => response.text())
       .then((data) => {
-        let selectElement = document.getElementById("subcategoria");
+        let selectElement = document.getElementById("subcategoriaSelect");
         selectElement.innerHTML = data;
-        let categorias = document.getElementById("categoriaSelect");
-        categorias.innerHTML = data;
-        
       })
       .catch((error) => console.error("Error:", error));
   }

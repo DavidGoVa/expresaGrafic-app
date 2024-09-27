@@ -289,7 +289,7 @@ if(!isset($_SESSION['usuario_id'])){
                                         if ($resultusuarios->num_rows > 0) {
                                             while ($row = $resultusuarios->fetch_assoc()) {
 
-                                                echo '<tr><td>' . $row['categoria'] .' ' . $row['subcategoria'] . '</td><td>' . $row['nombre'] . '</td>'. $tdEstado . $row['precioU'] . '</td><td>' . $row['stock'] . '</td><td>' . $row['id_producto'] . '</td></tr>';
+                                                echo '<tr><td>' . $row['categoria'] .'</td><td>' . $row['subcategoria'] . '</td><td>'. $row['nombre'] . '</td><td>' . $row['precioU'] . '</td><td>'. $row['stock'].'</td><td>'.$row['id_producto'].'</td></tr>';
                                                 /*<button id="' . $row["marca"] . '" onclick="cargarMarca(\'' . $row["marca"] . '\')">' . $row["marca"] . '</button>';
                                             */}
                                         } else {

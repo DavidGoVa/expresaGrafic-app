@@ -244,11 +244,7 @@ if (!isset($_SESSION['usuario_id'])) {
                                 <div class="col-md-6 mb-2" style="display:flex;flex-direction:column;">
                                     <label id="labelCat" for="categoriaSelect" class="form-label">Categoria</label>
                                     <select class="form-select" id="categoriaSelect" name="categoriaSelect">
-                                        <option value="Impresion">Impresión</option>
-                                        <option value="Impresion"></option>
-                                        <option value="Impresion">Impresión</option>
-                                        <option value="Impresion">Impresión</option>
-                                        <option value="Impresion">Impresión</option>
+                                        
                                     </select>
                                     <label id="oLabelCat" for="categoria" class="form-label" style="display:none;">Categoria</label>
                                     <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Categoria del producto" style="display:none;">
@@ -348,6 +344,7 @@ if (!isset($_SESSION['usuario_id'])) {
     <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
 
     <script src="funcionesAdmin.js"></script>
+    <script src="funcionesProductos.js"></script>
     <!-- Bootstrap core JavaScript-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
